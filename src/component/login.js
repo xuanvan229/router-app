@@ -5,15 +5,28 @@ import {
   Link,
   Redirect
 } from 'react-router-dom'
+import * as firebase from 'firebase'
+
 export default class Login extends Component {
   constructor(props){
     super(props);
     this.state = {
       username:'',
       password: '',
-      redirectToReferrer: false
+      redirectToReferrer: false,
+      alluser: ''
     }
 
+  }
+  componentDidMount(){
+    firebase.database().ref('username/').on('value',(snapshot)=>{
+      const currentuser = snapshot.val();
+      if(currentuser != null ){
+        this.setState({
+          alluser: currentuser
+        })
+      }
+    })
   }
   updateUsername(event){
     this.setState({
@@ -29,15 +42,27 @@ export default class Login extends Component {
 
   }
   _onclick(event){
-    this.setState({
-      redirectToReferrer: true
-    })
-    console.log("teng teng");
+
+    var check = false;
+    console.log("begin");
+    console.log(this.state.alluser);
+    for (var i= 0; i<this.state.alluser.length;i++){
+      if(this.state.username == this.state.alluser[i].username && this.state.password == this.state.alluser[i].password){
+        check = true
+        console.log('done');
+      }
+    }
+    if(check==true){
+      this.setState({
+        redirectToReferrer: true
+      })
+    }
   }
+
   render(){
     if(this.state.redirectToReferrer){
       return(
-        <Redirect to={`/${this.state.username}`} something="foo"/>
+        <Redirect to={`/${this.state.username}`} />
       )
     }
     return(
