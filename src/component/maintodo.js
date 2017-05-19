@@ -38,7 +38,7 @@ export default class Main extends Component {
     return(
       <div className="container login_form">
             <div className="row">
-                <h1>HELLO WORLD! </h1>
+                <h1>HELLO WORLD! {this.props.match.params.todo}</h1>
             </div>
       </div>
     )

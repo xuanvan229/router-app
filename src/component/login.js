@@ -37,7 +37,7 @@ export default class Login extends Component {
   render(){
     if(this.state.redirectToReferrer){
       return(
-        <Redirect to='/todo' something="foo"/>
+        <Redirect to={`/${this.state.username}`} something="foo"/>
       )
     }
     return(
