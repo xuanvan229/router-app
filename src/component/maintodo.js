@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
+// import TEST from './components/test';
+import * as firebase from 'firebase';
 import {
-  BrowserRouter as Router,
-  Route,
-  Link
+  Redirect
 } from 'react-router-dom'
-import * as firebase from 'firebase'
+import moment from 'moment';
+import Menu from './menu';
 
-export default class Main extends Component {
+export default class App extends Component {
   constructor(props){
     super(props);
+    this._onChange=this._onChange.bind(this);
+    this._onpress=this._onpress.bind(this);
     this.state = {
       username:'',
       password: '',
@@ -16,7 +19,8 @@ export default class Main extends Component {
       todo: [
 
       ],
-      work: ''
+      work: '',
+      time: ''
     }
 
   }
@@ -24,9 +28,9 @@ export default class Main extends Component {
     firebase.database().ref('alltodo/'+this.props.match.params.todo+'/').on('value',(snapshot)=>{
       var currenttodo = snapshot.val();
       console.log(currenttodo);
-      // if (!currenttodo.map){
-      //       currenttodo = Object.keys(currenttodo).map((k,i)=>currenttodo[k])
-      //   }
+      if (!currenttodo.map){
+            currenttodo = Object.keys(currenttodo).map((k,i)=>currenttodo[k])
+        }
       if(currenttodo != null ){
         this.setState({
           todo: currenttodo
@@ -35,75 +39,131 @@ export default class Main extends Component {
     })
 
   }
-  updatetodo(event){
-    this.setState({
-      work: event.target.value
-    })
-    console.log(event.target.value);
-  }
-  updatePassword(event){
-    this.setState({
-      password: event.target.value
-    })
-    console.log(event.target.value);
 
+
+
+  _onChange(event){
+    this.setState({
+      work: event.target.value,
+      time: moment().format("Do MMMM")
+    })
+    console.log(event.target.value);
   }
-  _onclick(event){
+
+
+  _onpress(event){
     console.log(this.state.work);
     const nextodo = {
       id:this.state.todo.length,
-      todowork:this.state.work
+      todowork:this.state.work,
+      times:this.state.time
     }
     firebase.database().ref('alltodo/'+this.props.match.params.todo+'/'+nextodo.id).set(nextodo);
-    console.log(this.state.todo);
-    console.log("teng teng");
-  }
-  render(){
-    const currentMessage = this.state.todo.map((td,i)=>{
-      return(
-        <li key={i} className="list-group-item">{td.todowork}</li>
-      )
-    })
-    // var renderitem = () =>{
-    //   for (var i=0;i<this.state.todo.length;i++)
-    //   var bien = this.state.todo[i];
-    //       console.log(this.state.todo[i]);
-    //   return(
-    //     <li key={i} className="list-group-item">{bien}</li>
-    //   )
-    // }
     // console.log(this.state.todo);
-    //   var currentMessage='';
-    //     if(this.state.todo){
-      //   var currentMessage=this.state.todo.map((message,i)=>{
-       //
-      //    return(
-       //
-      //      <li key={i} className="list-group-item">{message}</li>
-       //
-      //    )
-      //  })
-    //  }
-    // console.log(this.props.match.params);
-    return(
-      <div className="container login_form">
-            <div className="row">
-            <div className="col-md-4 col-md-offset-4">
-                  <ul className="list-group">
-                  {currentMessage}
-                  </ul>
+    // console.log("teng teng");
+    var notes=this.refs.notes;
+    notes.value ="";
+  }
+  _unhideform(event){
+    var form=document.getElementsByClassName("form-input");
+    form[0].style.display="block  ";
+  }
+  _hideform(event){
+    var form=document.getElementsByClassName("form-input");
+    form[0].style.display="none";
 
-            </div>
-              <div className="col-md-4 col-md-offset-4">
-                      <div className="form-group">
-                      <label htmlFor="exampleInputEmail1">TODO</label>
-                      <input type="email" onChange={this.updatetodo.bind(this)} className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter TODO" />
-                      <small id="emailHelp" className="form-text text-muted">Well never share your email with anyone else.</small>
-                          </div>
-                      <button type="button" className="btn btn-primary" onClick={this._onclick.bind(this)}>Primary</button>
+  }
+  _deletedata(i){
+    console.log(i);
+    const deleltedata={
+      id:null,
+      todowork:null
+    }
+    firebase.database().ref('alltodo/'+this.props.match.params.todo+'/'+i).set(deleltedata);
+    firebase.database().ref('todoapp/'+i).set(deleltedata);
+    // console.log(i)
+    // var adaRef = firebase.database().ref('todoapp/'+i);
+    // console.log(adaRef);
+    // adaRef.remove()
+    //   .then(function() {
+    //     console.log("Remove succeeded.")
+    //   })
+    //   .catch(function(error) {
+    //     console.log("Remove failed: " + error.message)
+    //   });
+  }
+
+
+
+
+  render() {
+
+
+    // console.log(this.state.allwork.length,this.state.allwork[2]);
+    const currentList=this.state.todo.map((workr,i)=>{
+
+      if(workr.id=="0"){
+        return;
+      }
+        else{
+          return(
+              <div className="row" key={i}>
+                <div className="col-md-12 col-xs-12">
+                  <li className="task-item " >
+                    <table cellPadding="0" cellSpacing="0">
+                      <tbody>
+                        <tr>
+                          <td>
+                            <span>
+                              <button className="delete" onClick={()=>this._deletedata(workr.id)}>
+                                  <span className="glyphicon glyphicon-ok del"></span>
+                              </button>
+                            </span>
+                          </td>
+                          <td className="form-td" >
+                            <div className="formBox">{workr.todowork}
+                            <span className="times">{workr.times}</span>
+
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </li>
+                  </div>
+              </div>
+        )
+      }
+    })
+    return (
+      <div>
+      <Menu/>
+      <div>
+        <div className="container todo">
+          <div className="row">
+            <div className="col-md-9 col-md-offset-1 col-xs-9 col-xs-offset-1 editor">
+              <h2 className="view-header">Inbox</h2>
+              <div className="items">
+                <ul>
+                    {currentList}
+                  <li className="form-input">
+                  <input className="input" ref="notes" onChange={this._onChange} placeholder="Something Todo..."></input>
+                  <button className="add" onClick={this._onpress}>Add</button>
+                  <button className="remove" onClick={this._hideform}>
+                    Cancel
+                    </button>
+                  </li>
+                </ul>
+                <div>
+                  <button className="add-todo" onClick={this._unhideform}>Add Task</button>
+                </div>
               </div>
             </div>
+          </div>
+        </div>
       </div>
-    )
-  }
-}
+      </div>
+
+        );
+      }
+    }

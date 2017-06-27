@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import {
   BrowserRouter as Router,
   Route,
   Switch,
-  Redirect,
-  Link
+  Redirect
 } from 'react-router-dom'
 import Login from './component/login'
 import Main from './component/maintodo'
+import Register from './component/register'
 
 import './App.css';
 
@@ -36,6 +35,8 @@ class App extends Component {
       <div className="container">
         <Switch>
           <Route exact path="/" component={Login}/>
+          <Route exact path="/register" component={Register}/>
+
           <PublicRoute authed={this.state.authed} path='/:todo' component={Main}  />
           </Switch>
       </div>

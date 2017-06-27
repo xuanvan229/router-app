@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 import {
-  BrowserRouter as Router,
-  Route,
-  Link,
   Redirect
 } from 'react-router-dom'
 import * as firebase from 'firebase'
@@ -14,7 +11,8 @@ export default class Login extends Component {
       username:'',
       password: '',
       redirectToReferrer: false,
-      alluser: ''
+      alluser: '',
+      nextrg: false
     }
 
   }
@@ -52,34 +50,51 @@ export default class Login extends Component {
         console.log('done');
       }
     }
-    if(check==true){
+    if(check===true){
       this.setState({
         redirectToReferrer: true
       })
     }
   }
-
+  _onclickrg(event){
+    this.setState({
+      nextrg: true
+    })
+  }
   render(){
     if(this.state.redirectToReferrer){
       return(
         <Redirect to={`/${this.state.username}`} />
       )
     }
+    if(this.state.nextrg){
+      return(
+        <Redirect to='/register' />
+      )
+    }
     return(
-      <div className="container login_form">
-            <div className="row">
-              <div className="col-md-6 col-md-offset-3">
-                <div className="input-group">
-                  <span className="input-group-addon" id="sizing-addon2">@</span>
-                  <input type="text" onChange={this.updateUsername.bind(this)} className="form-control" placeholder="Username" aria-describedby="sizing-addon2"/>
-                </div>
-                <div className="input-group">
-                  <span className="input-group-addon" id="sizing-addon2">@</span>
-                  <input type="text" onChange={this.updatePassword.bind(this)} className="form-control" placeholder="Password" aria-describedby="sizing-addon2" />
-                </div>
-                <button type="button" className="btn btn-primary btn-block button_ok" onClick={this._onclick.bind(this)}>Button 1</button>
-                </div>
+      <div className="container login-form">
+        <div className="row row-header">
+          <div className="col-md-4 col-sm-6 col-xs-12 item-1">
+            <div className="center-block">
+              <div className="form-group">
+              <p className="content-1">Access tasks everywhere</p>
+              <p className="content-2">With app, your tasks are always there: on mobile devices, web browsers, inboxes, and more.</p>
+              <div className="input-group">
+                <span className="input-group-addon" id="sizing-addon2"><div className="glyphicon glyphicon-user"></div></span>
+                <input type="text" onChange={this.updateUsername.bind(this)} className="form-control" placeholder="Username..." aria-describedby="sizing-addon2"/>
+              </div>
+              <div className="input-group">
+                <span className="input-group-addon" id="sizing-addon2"><div className="glyphicon glyphicon-lock"></div></span>
+                <input type="password" onChange={this.updatePassword.bind(this)} className="form-control" placeholder="Password..." aria-describedby="sizing-addon2" />
+              </div>
+              <button type="button" className="btn btn-danger btn-block button_ok dangnhap" onClick={this._onclick.bind(this)}><b>Login</b></button>
+              <button type="button" className="btn btn-danger btn-block button_ok dangky" onClick={this._onclickrg.bind(this)}><b>Register</b></button>
+
+              </div>
             </div>
+          </div>
+        </div>
       </div>
     )
   }

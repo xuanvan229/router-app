@@ -5,14 +5,14 @@ import './index.css';
 import * as firebase from 'firebase'
 
 var config = {
-  apiKey: "AIzaSyAOZFkMgDohk1woS6WodZsYezb0D5TCMHs",
-  authDomain: "todoapp-646d6.firebaseapp.com",
-  databaseURL: "https://todoapp-646d6.firebaseio.com",
-  projectId: "todoapp-646d6",
-  storageBucket: "todoapp-646d6.appspot.com",
-  messagingSenderId: "736097244303"
-};
-firebase.initializeApp(config);
+   apiKey: "AIzaSyClEzyh8mLYAuNQ3Tlq46QC3GbyLGjXiEA",
+   authDomain: "react-todo-a4383.firebaseapp.com",
+   databaseURL: "https://react-todo-a4383.firebaseio.com",
+   projectId: "react-todo-a4383",
+   storageBucket: "react-todo-a4383.appspot.com",
+   messagingSenderId: "790621731947"
+ };
+ firebase.initializeApp(config);
 
 ReactDOM.render(
   <App />,
